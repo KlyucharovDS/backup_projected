@@ -5,6 +5,7 @@
 """
 import logging
 import os.path
+import stat
 import tarfile
 from os import listdir
 from os import mkdir
@@ -13,6 +14,7 @@ from os.path import basename
 from os.path import exists
 from os.path import isdir
 from os.path import join
+from os import chmod
 from shutil import rmtree
 
 if __name__ == "__main__":
@@ -48,6 +50,10 @@ if __name__ == "__main__":
                 with tarfile.open(name=arch_name, mode='w:gz') as out:
                     out.add(name=abspath(join(curdir, item)))
                     out.close()
+                    # set all allow permissions on files and dirs
+                    chmod(path=arch_name,mode=stat.S_IRWXG+stat.S_IRWXU+stat.S_IRWXO)
+                    chmod(path=backup_dir, mode=stat.S_IRWXG + stat.S_IRWXU + stat.S_IRWXO)
+                    # write to log
                     message = f'\t+{arch_name}'
                     logging.debug(message)
                     print(message)
